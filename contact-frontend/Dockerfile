@@ -13,6 +13,4 @@ RUN npm install -g serve
 # add app
 COPY ./ /code
 
-EXPOSE 3000
-
 CMD ["npm", "start"]
