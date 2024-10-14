@@ -1,0 +1,73 @@
+services:
+      frontend:
+            build:
+              context: ./contact-frontend
+            container_name: react_app
+            ports:
+                  - "3000:3000"
+            volumes:
+                  - ./contact-frontend/src:/code/src:ro
+            environment:
+                  - REACT_APP_BACKEND_URL=http://localhost:8000
+            restart: always
+            networks:
+                  - mynetwork
+            
+      backend:
+            build: 
+              context: ./backend
+            container_name: fastapi_app
+            command: uvicorn src.main:app --host 0.0.0.0 --port 8000 
+            depends_on:
+                  - db
+            ports:
+                  - "8000:8000"
+            volumes:
+                  - ./backend/src:/app/src:ro
+                  - ./backend:/app
+                  - /src/__pycache__/
+            environment:
+                  - DATABASE_URL=postgresql://postgres:admin@my-postgres:5433/contactdetails
+            restart: always
+            networks:
+                  - my-network
+                  - mynetwork
+           
+      db:
+            image: postgres
+            container_name: my-postgres
+            ports:
+                  - "5433:5432"
+            environment:
+                  - POSTGRES_PASSWORD=admin
+                  - POSTGRES_USER=postgres
+                  - POSTGRES_DB=contactdetails
+            volumes:
+                  - ./postgres-data:/var/lib/postgresql/data
+            restart: always
+            networks:
+                  - my-network
+           
+      pgadmin:
+            image: dpage/pgadmin4
+            container_name: my-pgadmin
+            ports:
+                  - "8888:80"
+            environment:
+                  - PGADMIN_DEFAULT_EMAIL=teeAdmin@admin.com
+                  - PGADMIN_DEFAULT_PASSWORD=admin
+            restart: always
+            depends_on:
+                  - db
+            volumes:
+            - ./pgadmin:/var/lib/pgadmin
+            networks:
+                  - my-network
+      
+      
+volumes:
+      postgres-data:
+      pgadmin:
+networks:
+      my-network: {}
+      mynetwork: {}
