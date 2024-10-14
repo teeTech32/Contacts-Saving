@@ -13,4 +13,4 @@ RUN npm install -g serve
 # add app
 COPY ./ /code
 
-CMD ["npm", "start"]
+CMD ["npx", "start"]
