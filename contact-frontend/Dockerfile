@@ -12,4 +12,5 @@ RUN npm ci --silent
 RUN npm install -g serve
 # add app
 COPY ./ /code
+RUN npm start
 CMD ["npm", "start"]
