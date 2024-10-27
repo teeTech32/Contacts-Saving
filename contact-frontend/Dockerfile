@@ -1,4 +1,4 @@
-FROM node:latest as build
+FROM node:alpine AS builder
 # set working directory
 WORKDIR /code
 
